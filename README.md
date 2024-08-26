@@ -237,7 +237,7 @@ You have successfully created and resolved a merge conflict in Git using `abc.tx
 
 3. **Save and close the file**:
 
-   Save the changes and close the text editor.
+   Save the changes and close the text editor(Ctrl+X).
 
 ### Step 3: Verify `.gitignore` is Working
 
@@ -269,6 +269,12 @@ You have successfully created and resolved a merge conflict in Git using `abc.tx
    git commit -m "Add .gitignore file"
    ```
 
+3.**Push the changes**:
+
+   ```bash
+   git push
+   ```
+
 ### Step 5: Resolve Issues with `.gitignore`
 
 1. **If files are already tracked**:
@@ -293,6 +299,12 @@ You have successfully created and resolved a merge conflict in Git using `abc.tx
    git commit -m "Remove node_modules from tracking"
    ```
 
+3.**Push the changes**:
+
+   ```bash
+   git push
+   ```
+
 ### Example Patterns
 
 - **node_modules/**: Ignores the `node_modules` directory.
@@ -304,130 +316,150 @@ You have successfully created and resolved a merge conflict in Git using `abc.tx
 ## rebase
 ---------------------
 
-**Git Rebase Conflict Example**
+This demonstrates how to perform and resolve a `git rebase`. `git rebase` is a powerful tool that allows you to integrate changes from one branch into another, creating a cleaner project history.
 
-This example walks you through the steps to create and resolve a rebase conflict in Git using a file named `abc.txt`. Two users will be working on different branches to simulate the conflict.
+**Prerequisites**
 
-- **Prerequisites**
+Ensure you have the following installed:
 
-  - Git installed on your local machine.
-  
-  - A GitHub account (or any other Git hosting service).
-  
-  - Basic understanding of Git and terminal commands.
+- Git (version 2.0 or above)
+- A GitHub account (optional for pushing to a remote repository)
 
-### Step 1: Initialize the Repository
+
+
+### Step 1: Clone the Repository
+
+First, clone the repository to your local machine:
 
 ```bash
-git init
-echo "Initial content" > abc.txt
-git add abc.txt
-git commit -m "Initial commit"
-git remote add origin <remote-repository-URL>
-git branch -M main
-git push -u origin main
+git clone https://github.com/your-username/git-rebase-example.git
+cd git-rebase-example
 ```
 
-### Step 2: Create and Switch to New Branches
+### Step 2: Create a New Branch
 
-**User 1:**
-
-Create and switch to a new branch named `feature-branch-1`.
+Create a new branch from the `main` branch to work on:
 
 ```bash
-git checkout -b feature-branch-1
+git checkout -b feature-branch
 ```
 
-Make changes to `abc.txt`:
+### Step 3: Make Changes in the Feature Branch
+
+Edit some files or add new commits:
 
 ```bash
-echo "User 1's changes" >> abc.txt
-git add abc.txt
-git commit -m "User 1: Added changes to abc.txt"
-git push -u origin feature-branch-1
+echo "Feature A" >> feature.txt
+git add feature.txt
+git commit -m "Add Feature A"
 ```
 
-**User 2:**
+### Step 4: Push the Feature Branch
 
-Create and switch to a new branch named `feature-branch-2`.
+Push the feature branch to the remote repository:
 
 ```bash
-git checkout -b feature-branch-2
+git push origin feature-branch
 ```
 
-Make different changes to `abc.txt`:
+### Step 5: Switch Back to the Main Branch
 
-```bash
-echo "User 2's changes" >> abc.txt
-git add abc.txt
-git commit -m "User 2: Added changes to abc.txt"
-git push -u origin feature-branch-2
-  ```
-
-### Step 3: Rebase and Resolve Conflicts
-
-**User 1:**
-
-Rebase `feature-branch-1` onto `main`:
-
-```bash
-git checkout feature-branch-1
-git rebase main
-```
-
-If conflicts occur, resolve them:
-
-```bash
-# Open and resolve conflicts in abc.txt
-git add abc.txt
-git rebase --continue
-```
-
-Push the rebased branch:
-
-```bash
-git push -f origin feature-branch-1
-```
-**User 2:**
-
-Rebase `feature-branch-2` onto `main`:
-
-```bash
-git checkout feature-branch-2
-git rebase main
-```
-
-If conflicts occur, resolve them:
-
-```bash
-# Open and resolve conflicts in abc.txt
-git add abc.txt
-git rebase --continue
-```
-
-Push the rebased branch:
-
-```bash
-git push -f origin feature-branch-2
-  ```
-
-### Step 4: Merge Feature Branches into `main`
-
-Merge the feature branches into the `main` branch:
+Switch back to the `main` branch:
 
 ```bash
 git checkout main
-git merge feature-branch-1
-git merge feature-branch-2
 ```
 
-Push the final merged changes:
+### Step 6: Make Changes in the Main Branch
+
+Simulate changes in the `main` branch:
+
+```bash
+echo "Hotfix" >> hotfix.txt
+git add hotfix.txt
+git commit -m "Apply hotfix"
+```
+
+### Step 7: Push the Main Branch
+
+Push the changes in the `main` branch to the remote repository:
 
 ```bash
 git push origin main
 ```
 
-You have successfully completed a rebase process involving two users working on separate branches, resolving any conflicts that arose, and merging the final changes into the `main` branch.
+### Step 8: Rebase the Feature Branch onto Main
+
+Rebase your `feature-branch` onto `main`:
+
+```bash
+git checkout feature-branch
+git rebase main
+```
+
+### Step 9: Resolve Conflicts (If Any)
+
+If there are conflicts, Git will pause the rebase process. You can resolve them as follows:
+
+1. **Identify Conflicts**: Git will mark conflicts in the affected files.
+2. **Edit Files**: Manually resolve conflicts by editing the files.
+3. **Mark as Resolved**: Once conflicts are resolved, mark them as resolved:
+
+    ```bash
+    git add <resolved_file>
+    ```
+
+4. **Continue the Rebase**: After resolving all conflicts, continue the rebase:
+
+    ```bash
+    git rebase --continue
+    ```
+
+### Step 10: Force Push the Rebased Branch
+
+After a successful rebase, you need to force push the `feature-branch` to the remote repository to update it with the rebased commits:
+
+```bash
+git push --force-with-lease origin feature-branch
+```
+
+### Step 11: Verify the History
+
+After a successful rebase and push, verify the history to ensure that the commits have been properly applied:
+
+```bash
+git log --oneline --graph --all
+```
+
+This command should display a linear commit history, reflecting the rebased changes.
+
+### Step 12: Merge the Rebased Branch
+
+Finally, merge the `feature-branch` into the `main` branch:
+
+```bash
+git checkout main
+git merge feature-branch
+```
+
+This will result in a fast-forward merge, preserving the clean history.
+
+### Step 13: Push the Merged Changes
+
+Push the merged changes to the remote repository:
+
+```bash
+git push origin main
+```
+
+### Step 14: Delete the Feature Branch
+
+After merging, you can delete the feature branch both locally and remotely:
+
+```bash
+git branch -d feature-branch
+git push origin --delete feature-branch
+```
 
 
 ## Cherry Picking in Git
@@ -443,112 +475,105 @@ Cherry picking in Git allows you to apply the changes from a specific commit in 
 
 - Access to a repository with multiple branches.
 
-### Example Scenario
-
-Suppose you have the following setup:
-
-- `main` branch: The stable branch where you want to integrate specific changes.
-
-- `feature-branch`: A branch where you have implemented a new feature or fix.
-
-You have made several commits on `feature-branch`, but you only want to bring one specific commit into the `main` branch.
-
-
-
 ### Step 1: Clone the Repository
 
-If you haven't already cloned the repository, do so:
+First, clone the repository that you want to work on.
 
 ```bash
-git clone https://github.com/your-repo.git
-cd your-repo
+git clone <repository-url>
+cd <repository-directory>
 ```
 
-### Step  2: Check Out the Target Branch
+### Step 2: Create a New Branch
 
-Switch to the branch where you want to apply the commit. In this example, it is the `main` branch:
+Let's create a new branch where we will make some changes.
+
+```bash
+git checkout -b feature-branch
+```
+
+### Step 3: Make Some Commits
+
+Create a new file and commit it. For example:
+
+```bash
+echo "Hello, World!" > hello.txt
+git add hello.txt
+git commit -m "Add hello.txt with initial content"
+```
+
+Make another commit:
+
+```bash
+echo "This is a feature" > feature.txt
+git add feature.txt
+git commit -m "Add feature.txt with feature content"
+```
+
+### Step 4: Push the Feature Branch
+
+Push the new branch with the commits to the remote repository:
+
+```bash
+git push origin feature-branch
+```
+
+### Step 5: Switch to Another Branch
+
+Now, switch to another branch (e.g., `main` or `develop`).
 
 ```bash
 git checkout main
 ```
 
-### Step  3: Identify the Commit to Cherry Pick
+### Step 6: Cherry-Pick a Commit
 
-Find the commit hash on `feature-branch` that you want to cherry-pick. List commits on `feature-branch`:
+Suppose you want to apply the commit that added `feature.txt` to the `main` branch. You can cherry-pick this commit by using its commit hash.
 
-```bash
-git log feature-branch --oneline
-```
-
-Example output:
-
-```
-9dcbf1e Fix issue with user authentication
-5a1b2c3 Add validation to user form
-4a3b2c1 Update README with new instructions
-```
-
-In this example, you want to cherry-pick the commit `9dcbf1e` which fixes an issue with user authentication.
-
-### Step 4: Cherry Pick the Commit
-
-Apply the changes from the identified commit to the `main` branch:
+First, find the commit hash:
 
 ```bash
-git cherry-pick 9dcbf1e
+git log --oneline feature-branch
 ```
 
-Git will apply the changes from commit `9dcbf1e` to your current branch (`main`).
-
-### Step 5: Resolve Conflicts (if any)
-
-If there are conflicts, Git will notify you. Here's how to resolve them:
-
-1.**Check the Status**
+Then cherry-pick the commit:
 
 ```bash
-git status
+git cherry-pick <commit-hash>
 ```
 
- Look for files with conflicts, marked as `unmerged`.
+### Step 7: Resolve Conflicts (if any)
 
-2.**Open and Resolve Conflicts**
+If there are conflicts when applying the cherry-pick, Git will pause and allow you to resolve them.
 
- Open the files listed as having conflicts. Look for conflict markers (`<<<<<<`, `======`, `>>>>>>`). Manually edit the files to resolve theconflicts.
+1. Git will indicate the files that are in conflict. Open those files in a text editor.
 
-3.**Mark Files as Resolved**
+2. Look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) and resolve the conflicts by editing the file.
 
- After resolving conflicts, add the resolved files:
+3. After resolving the conflicts, add the resolved files:
 
-```bash
-git add <file>
-```
+    ```bash
+    git add <resolved-file>
+    ```
 
-4.**Continue Cherry Picking**
+4. Continue the cherry-pick process:
 
- Complete the cherry-pick process:
+    ```bash
+    git cherry-pick --continue
+    ```
 
-```bash
-git cherry-pick --continue
-```
+### Step 8: Verify the Changes
 
-### Step 6: Verify and Commit
-
-Review the changes to ensure everything is correct:
+After successfully cherry-picking the commit, you can verify the changes by viewing the file or using `git log`:
 
 ```bash
+cat feature.txt
 git log --oneline
 ```
 
-If the cherry-pick was successful and there are no additional changes needed, you might not need to commit separately, as `git cherry-pick` handles it. However, if you made manual changes, commit the resolved files:
+### Step 9: Push the Changes
 
-```bash
-git commit -m "Cherry-picked commit 9dcbf1e from feature-branch"
-```
-
-### Step 7: Push the Changes
-
-Push the updated `main` branch to the remote repository:
+Finally, push the changes to the remote repository:
 
 ```bash
 git push origin main
@@ -707,6 +732,14 @@ git merge branch-name
 After merging and pushing changes, you might want to delete the feature branch:
 
 ```bash
+git checkout main
+```
+
+```bash
+git pull
+```
+
+```bash
 git branch -d feature-branch
 ```
 
@@ -831,8 +864,8 @@ git push origin feature/<feature-name>
 - Delete the feature branch:
 
 ```bash
- git branch -d feature/<feature-name>
- git push origin --delete feature/<feature-name>
+git branch -d feature/<feature-name>
+git push origin --delete feature/<feature-name>
 ```
 
 ### Step 5: Update Local Repository
